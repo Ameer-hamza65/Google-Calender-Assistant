@@ -14,7 +14,7 @@ llm = AzureChatOpenAI(
     max_tokens=None,
     timeout=None,  
     max_retries=2,  
-    api_key=os.getenv('AZURE_OPENAI_API') 
+    api_key=os.getenv('AZURE_OPENAI_API')  
 )  
     
 graph = create_react_agent(llm, tools, checkpointer=memory)
