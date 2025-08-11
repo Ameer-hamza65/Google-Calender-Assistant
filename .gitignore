@@ -145,7 +145,7 @@ env.bak/
 venv.bak/
 
 credentials.json
-token.json 
+token.json  
 
 # Spyder project settings
 .spyderproject
