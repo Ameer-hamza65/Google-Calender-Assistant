@@ -1,28 +1,25 @@
-from langgraph.prebuilt import create_react_agent
 import os
+from langgraph.prebuilt import create_react_agent
 from langchain_openai import AzureChatOpenAI
 from tools import tools
 from langgraph.checkpoint.memory import InMemorySaver
-memory=InMemorySaver()
- 
+
+memory = InMemorySaver() 
 
 os.environ["AZURE_OPENAI_ENDPOINT"] = os.getenv('AZURE_OPENAI_ENDPOINT')
-
-
 llm = AzureChatOpenAI(
-    azure_deployment="gpt-4o",  # or your deployment
-    api_version="2025-01-01-preview",  # or your api version
+    azure_deployment="gpt-4o",
+    api_version="2025-01-01-preview",
     temperature=0,
-    max_tokens=None, 
-    timeout=None, 
+    max_tokens=None,
+    timeout=None,
     max_retries=2,
     api_key=os.getenv('AZURE_OPENAI_API')
-    # other params...
 )
 
-graph=create_react_agent(llm,tools,checkpointer=memory)
+graph = create_react_agent(llm, tools, checkpointer=memory)
 
-SYSTEM_PROMPT="""
+SYSTEM_PROMPT = """
 You are a Google Calendar assistant. 
 Your job is to help the user manage their schedule by using the available tools to create, update, delete, search, and retrieve calendar events or information.
 
@@ -57,38 +54,32 @@ You have access to the following tools:
 - CalendarSearchEvents: Search for existing events.
 - GetCalendarsInfo: Get available calendar details.
 - CurrentDatetimeSchema: Get the current date/time.
-
 """
 
-config={'configurable':{'thread_id':'1'}}
+config = {'configurable': {'thread_id': '1'}}
+
 def parse_response(stream):
-    tool_called_name='None'
-    final_response=None
+    tool_called_name = 'None'
+    final_response = None
     
     for s in stream:
-        tool_data=s.get('tools')
+        tool_data = s.get('tools')
         if tool_data:
-            tool_messages=tool_data.get('messages')
+            tool_messages = tool_data.get('messages')
             if tool_messages and isinstance(tool_messages, list):
                 for msg in tool_messages:
-                    tool_called_name=getattr(msg,'name','None')
+                    tool_called_name = getattr(msg, 'name', 'None')
         
-        agent_data=s.get('agent')
+        agent_data = s.get('agent')
         if agent_data:
-            messages=agent_data.get('messages')
+            messages = agent_data.get('messages')
             if messages and isinstance(messages, list):
                 for msg in messages:
-                    if msg.content:
-                        final_response=msg.content
+                    if hasattr(msg, 'content') and msg.content:
+                        final_response = msg.content
     return tool_called_name, final_response
 
-
-if __name__=='__main__':
-    while True:
-        user_input=input('User: ')
-        print(f'Recieved user input: {user_input}')
-        inputs={'messages': [('system',SYSTEM_PROMPT), ('user', user_input)]}
-        stream=graph.stream(inputs, stream_mode='updates',config=config)
-        tool_called_name, final_response=parse_response(stream)
-        print('Tool called: ',tool_called_name)
-        print('final response: ',final_response)
+def run_agent(user_input):
+    inputs = {'messages': [('system', SYSTEM_PROMPT), ('user', user_input)]}
+    stream = graph.stream(inputs, stream_mode='updates', config=config)
+    return parse_response(stream)
