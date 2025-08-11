@@ -13,5 +13,5 @@ tool3=CalendarSearchEvents()
 tool4=GetCalendarsInfo()
 tool5=GetCurrentDatetime() 
 tool6=CalendarUpdateEvent() 
-
+ 
 tools=[tool1,tool2,tool3,tool4,tool5,tool6]
