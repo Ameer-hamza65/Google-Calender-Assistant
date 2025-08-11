@@ -18,7 +18,7 @@ llm = AzureChatOpenAI(
 )
 
 graph = create_react_agent(llm, tools, checkpointer=memory)
-
+ 
 SYSTEM_PROMPT = """
 You are a Google Calendar assistant. 
 Your job is to help the user manage their schedule by using the available tools to create, update, delete, search, and retrieve calendar events or information.
