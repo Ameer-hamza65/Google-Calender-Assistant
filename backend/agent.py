@@ -14,7 +14,7 @@ llm = AzureChatOpenAI(
     api_version="2025-01-01-preview",  # or your api version
     temperature=0,
     max_tokens=None,
-    timeout=None,
+    timeout=None, 
     max_retries=2,
     api_key=os.getenv('AZURE_OPENAI_API')
     # other params...
