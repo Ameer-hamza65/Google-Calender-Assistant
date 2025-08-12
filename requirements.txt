@@ -1,0 +1,3 @@
+langchain-openai
+fastapi
+langchain- google-community
