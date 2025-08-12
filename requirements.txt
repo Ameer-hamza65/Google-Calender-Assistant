@@ -1,3 +1,6 @@
 langchain-openai
 fastapi
 langchain-google-community
+streamlit
+pydantic
+langgraph
