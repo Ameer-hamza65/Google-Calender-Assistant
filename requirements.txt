@@ -3,4 +3,4 @@ fastapi
 langchain-google-community
 streamlit
 pydantic
-langgraph
+langgraph 
